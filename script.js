@@ -1,6 +1,8 @@
 document.getElementById("formulario").addEventListener("submit", function(e){
     e.preventDefault();
+    let p[eliculas] = [];
     var pelicula = {
+        id: getId(),
         titulo: document.getElementById("titulo").value,
         anio: document.getElementById("anio").value,
         duracion: document.getElementById("duracion").value,
@@ -8,6 +10,7 @@ document.getElementById("formulario").addEventListener("submit", function(e){
         director: document.getElementById("director").value,
         sinopsis: document.getElementById("sinopsis").value,
     }
+    peliculas.push(pelicula);
     agregarTabla(pelicula);
     e.target.reset();
 
@@ -23,28 +26,72 @@ function agregarTabla(pelicula){
     }
 
     var td = document.createElement("td");
-    var btn = document.createElement("button");
-    btn.textContent = "Eliminar";
-    btn.className = "btn btn-danger";
-    td.appendChild(btn);
+    var btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "Eliminar";
+    btnEliminar.className = "btn btn-danger";
+    td.appendChild(btnEliminar);
     fila.appendChild(td);
-    btn.onclick = function(){
+    btnEliminar.onclick = function(){
         tbody.removeChild(this.parentNode.parentNode);
     }
+
     var td = document.createElement("td");
-    var btne = document.createElement("button");
-    btne.textContent = "Editar";
-    btne.className = "btn btn-success";
-    td.appendChild(btne);
+    var btnEditar = document.createElement("button");
+    btnEditar.textContent = "Editar";
+    btnEditar.className = "btn btn-success";
+    td.appendChild(btnEditar);
     fila.appendChild(td);
-    btn2.onclick = function(){
-        document.getElementById("titulo").value = fila.childNodes[0].textContent;
-        document.getElementById("anio").value = fila.childNodes[1].textContent;
-        document.getElementById("duracion").value = fila.childNodes[2].textContent;
-        document.getElementById("genero").value = fila.childNodes[3].textContent;
-        document.getElementById("director").value = fila.childNodes[4].textContent;
-        document.getElementById("sinopsis").value = fila.childNodes[5].textContent;
+    btnEditar.onclick = function(){
+        Editar(pelicula.id);
     };
 
     tbody.appendChild(fila);
 }})
+
+function limpiar(){ 
+    document.getElementById("titulo").value = "";
+    document.getElementById("anio").value = "";
+    document.getElementById("duracion").value = "";
+    document.getElementById("genero").value = "";
+    document.getElementById("director").value = "";
+    document.getElementById("sinopsis").value = "";
+}
+
+function btnAgregar(){
+    btn1.textContent = "Agregar";
+    btn1.className = "btn btn-primary";
+    btn1.onclick = function(){
+        agregarTabla(pelicula);
+        limpiar();
+    }
+}
+
+function getId(){
+    let count, id;
+
+    if(localStorage.getItem("id")){
+        count = parseInt(localStorage.getItem("id")) + 1;
+    }else{
+        count = 1;
+    }
+
+    localStorage.setItem("id", count);
+    id = "ID" + count;
+    return id;
+}
+
+function Editar(id){
+    var pelicula = peliculas.find(function(pelicula){
+        return pelicula.id === id;
+    });
+    btn1.textContent = "Editar";
+    btn1.className = "btn btn-success";
+    document.getElementById("titulo").value = pelicula.titulo;
+    document.getElementById("anio").value = pelicula.anio;
+    document.getElementById("duracion").value = pelicula.duracion;
+    document.getElementById("genero").value = pelicula.genero;
+    document.getElementById("director").value = pelicula.director;
+    document.getElementById("sinopsis").value = pelicula.sinopsis;
+    btnAgregar();
+    limpiar();
+}
